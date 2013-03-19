@@ -73,33 +73,6 @@ class SharesGetTest(base.BaseShareTest):
                 self.assertEqual(202, resp.status)
                 self.client.wait_for_resource_deletion(share['id'])
 
-    @attr(type='positive')
-    def test_share_get_metadata_none(self):
-        # Create a share without passing metadata, get details, and delete
-        try:
-            share = {}
-            v_name = rand_name('Share-')
-            # Create a share without metadata
-            resp, share = self.client.create_share(size=1,proto='nfs',
-                                                     display_name=v_name,
-                                                     metadata={})
-            self.assertEqual(200, resp.status)
-            self.assertTrue('id' in share)
-#            self.assertTrue('display_name' in share)
-            self.client.wait_for_share_status(share['id'], 'available')
-            #GET Share
-            resp, fetched_share = self.client.get_share(share['id'])
-            self.assertEqual(200, resp.status)
-#            self.assertEqual(fetched_share['metadata'], {})
-        except Exception:
-            self.fail("Could not get share metadata")
-        finally:
-            if share:
-                # Delete the Share if it was created
-                resp, _ = self.client.delete_share(share['id'])
-                self.assertEqual(202, resp.status)
-                self.client.wait_for_resource_deletion(share['id'])
-
 
 class SharesGetTestXML(SharesGetTest):
     _interface = "xml"
