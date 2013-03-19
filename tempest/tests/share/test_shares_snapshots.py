@@ -12,28 +12,28 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from tempest.tests.volume import base
+from tempest.tests.share import base
 
 
-class VolumesSnapshotTest(base.BaseVolumeTest):
+class SharesSnapshotTest(base.BaseShareTest):
     _interface = "json"
 
-    def test_volume_from_snapshot(self):
-        volume_origin = self.create_volume(size=1)
-        snapshot = self.create_snapshot(volume_origin['id'])
-        volume_snap = self.create_volume(size=1,
+    def test_share_from_snapshot(self):
+        share_origin = self.create_share(size=1)
+        snapshot = self.create_snapshot(share_origin['id'])
+        share_snap = self.create_share(size=1,
                                          snapshot_id=
                                          snapshot['id'])
         self.snapshots_client.delete_snapshot(snapshot['id'])
-        self.volumes_client.delete_volume(volume_snap['id'])
+        self.shares_client.delete_share(share_snap['id'])
         self.snapshots_client.wait_for_resource_deletion(snapshot['id'])
         self.snapshots.remove(snapshot)
-        self.volumes_client.delete_volume(volume_origin['id'])
-        self.volumes_client.wait_for_resource_deletion(volume_snap['id'])
-        self.volumes.remove(volume_snap)
-        self.volumes_client.wait_for_resource_deletion(volume_origin['id'])
-        self.volumes.remove(volume_origin)
+        self.shares_client.delete_share(share_origin['id'])
+        self.shares_client.wait_for_resource_deletion(share_snap['id'])
+        self.shares.remove(share_snap)
+        self.shares_client.wait_for_resource_deletion(share_origin['id'])
+        self.shares.remove(share_origin)
 
 
-class VolumesSnapshotTestXML(VolumesSnapshotTest):
+class SharesSnapshotTestXML(SharesSnapshotTest):
     _interface = "xml"
