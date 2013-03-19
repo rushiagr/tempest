@@ -91,7 +91,7 @@ class SharesClientJSON(RestClient):
             resp, body = self.get_share(share_id)
             share_status = body['status']
             if share_status == 'error':
-                raise exceptions.ShareBuildErrorException(share_id=share_id)
+                raise exceptions.VolumeBuildErrorException(volume_id=share_id)
 
             if int(time.time()) - start >= self.build_timeout:
                 message = ('Share %s failed to reach %s status within '
