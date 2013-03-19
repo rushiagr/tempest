@@ -26,7 +26,7 @@ import tempest.test
 LOG = logging.getLogger(__name__)
 
 
-class BaseVolumeTest(tempest.test.BaseTestCase):
+class BaseShareTest(tempest.test.BaseTestCase):
 
     """Base test case class for all Cinder API tests."""
 
