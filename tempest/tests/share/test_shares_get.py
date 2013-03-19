@@ -17,89 +17,89 @@
 
 from tempest.common.utils.data_utils import rand_name
 from tempest.test import attr
-from tempest.tests.volume import base
+from tempest.tests.share import base
 
 
-class VolumesGetTest(base.BaseVolumeTest):
+class SharesGetTest(base.BaseShareTest):
 
     _interface = "json"
 
     @classmethod
     def setUpClass(cls):
-        super(VolumesGetTest, cls).setUpClass()
-        cls.client = cls.volumes_client
+        super(SharesGetTest, cls).setUpClass()
+        cls.client = cls.shares_client
 
     @attr(type='smoke')
-    def test_volume_create_get_delete(self):
-        # Create a volume, Get it's details and Delete the volume
+    def test_share_create_get_delete(self):
+        # Create a share, Get it's details and Delete the share
         try:
-            volume = {}
-            v_name = rand_name('Volume-')
+            share = {}
+            v_name = rand_name('Share-')
             metadata = {'Type': 'work'}
-            #Create a volume
-            resp, volume = self.client.create_volume(size=1,
+            #Create a share
+            resp, share = self.client.create_share(size=1,
                                                      display_name=v_name,
                                                      metadata=metadata)
             self.assertEqual(200, resp.status)
-            self.assertTrue('id' in volume)
-            self.assertTrue('display_name' in volume)
-            self.assertEqual(volume['display_name'], v_name,
-                             "The created volume name is not equal "
+            self.assertTrue('id' in share)
+            self.assertTrue('display_name' in share)
+            self.assertEqual(share['display_name'], v_name,
+                             "The created share name is not equal "
                              "to the requested name")
-            self.assertTrue(volume['id'] is not None,
-                            "Field volume id is empty or not found.")
-            self.client.wait_for_volume_status(volume['id'], 'available')
-            # Get Volume information
-            resp, fetched_volume = self.client.get_volume(volume['id'])
+            self.assertTrue(share['id'] is not None,
+                            "Field share id is empty or not found.")
+            self.client.wait_for_share_status(share['id'], 'available')
+            # Get Share information
+            resp, fetched_share = self.client.get_share(share['id'])
             self.assertEqual(200, resp.status)
             self.assertEqual(v_name,
-                             fetched_volume['display_name'],
-                             'The fetched Volume is different '
-                             'from the created Volume')
-            self.assertEqual(volume['id'],
-                             fetched_volume['id'],
-                             'The fetched Volume is different '
-                             'from the created Volume')
+                             fetched_share['display_name'],
+                             'The fetched Share is different '
+                             'from the created Share')
+            self.assertEqual(share['id'],
+                             fetched_share['id'],
+                             'The fetched Share is different '
+                             'from the created Share')
             self.assertEqual(metadata,
-                             fetched_volume['metadata'],
-                             'The fetched Volume is different '
-                             'from the created Volume')
+                             fetched_share['metadata'],
+                             'The fetched Share is different '
+                             'from the created Share')
         except Exception:
-            self.fail("Could not create a volume")
+            self.fail("Could not create a share")
         finally:
-            if volume:
-                # Delete the Volume if it was created
-                resp, _ = self.client.delete_volume(volume['id'])
+            if share:
+                # Delete the Share if it was created
+                resp, _ = self.client.delete_share(share['id'])
                 self.assertEqual(202, resp.status)
-                self.client.wait_for_resource_deletion(volume['id'])
+                self.client.wait_for_resource_deletion(share['id'])
 
     @attr(type='positive')
-    def test_volume_get_metadata_none(self):
-        # Create a volume without passing metadata, get details, and delete
+    def test_share_get_metadata_none(self):
+        # Create a share without passing metadata, get details, and delete
         try:
-            volume = {}
-            v_name = rand_name('Volume-')
-            # Create a volume without metadata
-            resp, volume = self.client.create_volume(size=1,
+            share = {}
+            v_name = rand_name('Share-')
+            # Create a share without metadata
+            resp, share = self.client.create_share(size=1,
                                                      display_name=v_name,
                                                      metadata={})
             self.assertEqual(200, resp.status)
-            self.assertTrue('id' in volume)
-            self.assertTrue('display_name' in volume)
-            self.client.wait_for_volume_status(volume['id'], 'available')
-            #GET Volume
-            resp, fetched_volume = self.client.get_volume(volume['id'])
+            self.assertTrue('id' in share)
+            self.assertTrue('display_name' in share)
+            self.client.wait_for_share_status(share['id'], 'available')
+            #GET Share
+            resp, fetched_share = self.client.get_share(share['id'])
             self.assertEqual(200, resp.status)
-            self.assertEqual(fetched_volume['metadata'], {})
+            self.assertEqual(fetched_share['metadata'], {})
         except Exception:
-            self.fail("Could not get volume metadata")
+            self.fail("Could not get share metadata")
         finally:
-            if volume:
-                # Delete the Volume if it was created
-                resp, _ = self.client.delete_volume(volume['id'])
+            if share:
+                # Delete the Share if it was created
+                resp, _ = self.client.delete_share(share['id'])
                 self.assertEqual(202, resp.status)
-                self.client.wait_for_resource_deletion(volume['id'])
+                self.client.wait_for_resource_deletion(share['id'])
 
 
-class VolumesGetTestXML(VolumesGetTest):
+class SharesGetTestXML(SharesGetTest):
     _interface = "xml"
