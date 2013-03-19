@@ -36,16 +36,6 @@ class SharesClientJSON(RestClient):
         self.build_interval = self.config.volume.build_interval
         self.build_timeout = self.config.volume.build_timeout
 
-    def list_shares(self, params=None):
-        """List all the shares created."""
-        url = 'shares'
-        if params:
-                url += '?%s' % urllib.urlencode(params)
-
-        resp, body = self.get(url)
-        body = json.loads(body)
-        return resp, body['shares']
-
     def list_shares_with_detail(self, params=None):
         """List the details of all shares."""
         url = 'shares/detail'

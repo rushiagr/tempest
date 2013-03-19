@@ -56,20 +56,6 @@ class SharesClientXML(RestClientXML):
                 vol[tag] = xml_to_json(child)
         return vol
 
-    def list_shares(self, params=None):
-        """List all the shares created."""
-        url = 'shares'
-
-        if params:
-            url += '?%s' % urllib.urlencode(params)
-
-        resp, body = self.get(url, self.headers)
-        body = etree.fromstring(body)
-        shares = []
-        if body is not None:
-            shares += [self._parse_share(vol) for vol in list(body)]
-        return resp, shares
-
     def list_shares_with_detail(self, params=None):
         """List all the details of shares."""
         url = 'shares/detail'

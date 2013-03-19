@@ -77,19 +77,6 @@ class SharesListTest(base.BaseShareTest):
         super(sharesListTest, cls).tearDownClass()
 
     @attr(type='smoke')
-    def test_share_list(self):
-        # Get a list of shares
-        # Fetch all shares
-        resp, fetched_list = self.client.list_shares()
-        self.assertEqual(200, resp.status)
-        # Now check if all the shares created in setup are in fetched list
-        missing_vols = [v for v in self.share_list if v not in fetched_list]
-        self.assertFalse(missing_vols,
-                         "Failed to find share %s in fetched list" %
-                         ', '.join(m_vol['display_name']
-                                   for m_vol in missing_vols))
-
-    @attr(type='smoke')
     def test_share_list_with_details(self):
         # Get a list of shares with details
         # Fetch all shares
