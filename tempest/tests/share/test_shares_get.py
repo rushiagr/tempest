@@ -37,7 +37,7 @@ class SharesGetTest(base.BaseShareTest):
             v_name = rand_name('Share-')
             metadata = {'Type': 'work'}
             #Create a share
-            resp, share = self.client.create_share(size=1,
+            resp, share = self.client.create_share(size=1,proto='nfs',
                                                      display_name=v_name,
                                                      metadata=metadata)
             self.assertEqual(200, resp.status)
@@ -80,7 +80,7 @@ class SharesGetTest(base.BaseShareTest):
             share = {}
             v_name = rand_name('Share-')
             # Create a share without metadata
-            resp, share = self.client.create_share(size=1,
+            resp, share = self.client.create_share(size=1,proto='nfs',
                                                      display_name=v_name,
                                                      metadata={})
             self.assertEqual(200, resp.status)
