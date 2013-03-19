@@ -32,9 +32,9 @@ class SharesClientJSON(RestClient):
         super(SharesClientJSON, self).__init__(config, username, password,
                                                 auth_url, tenant_name)
 
-        self.service = self.config.share.catalog_type
-        self.build_interval = self.config.share.build_interval
-        self.build_timeout = self.config.share.build_timeout
+        self.service = 'volume'#self.config.volume.catalog_type
+        self.build_interval = self.config.volume.build_interval
+        self.build_timeout = self.config.volume.build_timeout
 
     def list_shares(self, params=None):
         """List all the shares created."""
@@ -76,6 +76,8 @@ class SharesClientJSON(RestClient):
         """
         post_body = {'size': size}
         post_body['proto'] = proto
+        post_body['share_type'] = proto
+        post_body['display_name'] = 'share1'
         post_body.update(kwargs)
         post_body = json.dumps({'share': post_body})
         resp, body = self.post('shares', post_body, self.headers)
@@ -86,24 +88,6 @@ class SharesClientJSON(RestClient):
         """Deletes the Specified Share."""
         return self.delete("shares/%s" % str(share_id))
 
-    def attach_share(self, share_id, instance_uuid, mountpoint):
-        """Attaches a share to a given instance on a given mountpoint."""
-        post_body = {
-            'instance_uuid': instance_uuid,
-            'mountpoint': mountpoint,
-        }
-        post_body = json.dumps({'os-attach': post_body})
-        url = 'shares/%s/action' % (share_id)
-        resp, body = self.post(url, post_body, self.headers)
-        return resp, body
-
-    def detach_share(self, share_id):
-        """Detaches a share from an instance."""
-        post_body = {}
-        post_body = json.dumps({'os-detach': post_body})
-        url = 'shares/%s/action' % (share_id)
-        resp, body = self.post(url, post_body, self.headers)
-        return resp, body
 
     def wait_for_share_status(self, share_id, status):
         """Waits for a Share to reach a given status."""

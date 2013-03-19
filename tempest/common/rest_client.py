@@ -118,7 +118,7 @@ class RestClient(object):
         """
         Provides authentication via Keystone.
         """
-
+        self.LOG.debug("args"+'|'+user+'|'+password+'|'+auth_url+'|'+service+'|'+tenant_name)
         # Normalize URI to ensure /tokens is in it.
         if 'tokens' not in auth_url:
             auth_url = auth_url.rstrip('/') + '/tokens'

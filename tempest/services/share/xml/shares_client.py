@@ -37,7 +37,7 @@ class SharesClientXML(RestClientXML):
     def __init__(self, config, username, password, auth_url, tenant_name=None):
         super(SharesClientXML, self).__init__(config, username, password,
                                                auth_url, tenant_name)
-        self.service = self.config.share.catalog_type
+        self.service = 'volume'
         self.build_interval = self.config.compute.build_interval
         self.build_timeout = self.config.compute.build_timeout
 
@@ -91,7 +91,7 @@ class SharesClientXML(RestClientXML):
         body = etree.fromstring(body)
         return resp, self._parse_share(body)
 
-    def create_share(self, size, **kwargs):
+    def create_share(self, size, proto, **kwargs):
         """Creates a new share.
 
         :param size: Size of share in GB. (Required)
@@ -102,7 +102,7 @@ class SharesClientXML(RestClientXML):
                             this snapshot
         """
         #NOTE(afazekas): it should use a share namespace
-        share = Element("share", xmlns=XMLNS_11, size=size)
+        share = Element("share", xmlns=XMLNS_11, size=size, proto=proto, share_type=proto, display_name='share1')
 
         if 'metadata' in kwargs:
             _metadata = Element('metadata')

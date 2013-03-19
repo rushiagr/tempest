@@ -75,6 +75,7 @@ class ComputeWhiteboxTest(test.ComputeFuzzClientTest, WhiteboxTest):
         cls.security_groups_client = cls.manager.security_groups_client
         cls.limits_client = cls.manager.limits_client
         cls.volumes_client = cls.manager.volumes_client
+        cls.shares_client = cls.manager.shares_client
         cls.build_interval = cls.config.compute.build_interval
         cls.build_timeout = cls.config.compute.build_timeout
         cls.ssh_user = cls.config.compute.ssh_user
