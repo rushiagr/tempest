@@ -74,7 +74,7 @@ class SharesListTest(base.BaseShareTest):
         for volid in cls.share_id_list:
             resp, _ = cls.client.delete_share(volid)
             cls.client.wait_for_resource_deletion(volid)
-        super(sharesListTest, cls).tearDownClass()
+        super(SharesListTest, cls).tearDownClass()
 
     @attr(type='smoke')
     def test_share_list_with_details(self):

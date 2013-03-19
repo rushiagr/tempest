@@ -82,7 +82,7 @@ class SharesClientJSON(RestClient):
     def wait_for_share_status(self, share_id, status):
         """Waits for a Share to reach a given status."""
         resp, body = self.get_share(share_id)
-        share_name = body['display_name']
+        share_name = body['name']
         share_status = body['status']
         start = int(time.time())
 
