@@ -17,91 +17,91 @@
 
 from tempest.common.utils.data_utils import rand_name
 from tempest.test import attr
-from tempest.tests.volume import base
+from tempest.tests.share import base
 
 
-class VolumesListTest(base.BaseVolumeTest):
+class SharesListTest(base.BaseShareTest):
 
     """
-    This test creates a number of 1G volumes. To run successfully,
-    ensure that the backing file for the volume group that Nova uses
-    has space for at least 3 1G volumes!
+    This test creates a number of 1G shares. To run successfully,
+    ensure that the backing file for the share group that Nova uses
+    has space for at least 3 1G shares!
     If you are running a Devstack environment, ensure that the
-    VOLUME_BACKING_FILE_SIZE is atleast 4G in your localrc
+    share_BACKING_FILE_SIZE is atleast 4G in your localrc
     """
 
     _interface = 'json'
 
     @classmethod
     def setUpClass(cls):
-        super(VolumesListTest, cls).setUpClass()
-        cls.client = cls.volumes_client
+        super(SharesListTest, cls).setUpClass()
+        cls.client = cls.shares_client
 
-        # Create 3 test volumes
-        cls.volume_list = []
-        cls.volume_id_list = []
+        # Create 3 test shares
+        cls.share_list = []
+        cls.share_id_list = []
         for i in range(3):
-            v_name = rand_name('volume')
+            v_name = rand_name('share')
             metadata = {'Type': 'work'}
             try:
-                resp, volume = cls.client.create_volume(size=1,
+                resp, share = cls.client.create_share(size=1,proto='nfs',
                                                         display_name=v_name,
                                                         metadata=metadata)
-                cls.client.wait_for_volume_status(volume['id'], 'available')
-                resp, volume = cls.client.get_volume(volume['id'])
-                cls.volume_list.append(volume)
-                cls.volume_id_list.append(volume['id'])
+                cls.client.wait_for_share_status(share['id'], 'available')
+                resp, share = cls.client.get_share(share['id'])
+                cls.share_list.append(share)
+                cls.share_id_list.append(share['id'])
             except Exception:
-                if cls.volume_list:
-                    # We could not create all the volumes, though we were able
-                    # to create *some* of the volumes. This is typically
-                    # because the backing file size of the volume group is
+                if cls.share_list:
+                    # We could not create all the shares, though we were able
+                    # to create *some* of the shares. This is typically
+                    # because the backing file size of the share group is
                     # too small. So, here, we clean up whatever we did manage
                     # to create and raise a SkipTest
-                    for volid in cls.volume_id_list:
-                        cls.client.delete_volume(volid)
+                    for volid in cls.share_id_list:
+                        cls.client.delete_share(volid)
                         cls.client.wait_for_resource_deletion(volid)
-                    msg = ("Failed to create ALL necessary volumes to run "
+                    msg = ("Failed to create ALL necessary shares to run "
                            "test. This typically means that the backing file "
-                           "size of the nova-volumes group is too small to "
-                           "create the 3 volumes needed by this test case")
+                           "size of the nova-shares group is too small to "
+                           "create the 3 shares needed by this test case")
                     raise cls.skipException(msg)
                 raise
 
     @classmethod
     def tearDownClass(cls):
-        # Delete the created volumes
-        for volid in cls.volume_id_list:
-            resp, _ = cls.client.delete_volume(volid)
+        # Delete the created shares
+        for volid in cls.share_id_list:
+            resp, _ = cls.client.delete_share(volid)
             cls.client.wait_for_resource_deletion(volid)
-        super(VolumesListTest, cls).tearDownClass()
+        super(sharesListTest, cls).tearDownClass()
 
     @attr(type='smoke')
-    def test_volume_list(self):
-        # Get a list of Volumes
-        # Fetch all volumes
-        resp, fetched_list = self.client.list_volumes()
+    def test_share_list(self):
+        # Get a list of shares
+        # Fetch all shares
+        resp, fetched_list = self.client.list_shares()
         self.assertEqual(200, resp.status)
-        # Now check if all the volumes created in setup are in fetched list
-        missing_vols = [v for v in self.volume_list if v not in fetched_list]
+        # Now check if all the shares created in setup are in fetched list
+        missing_vols = [v for v in self.share_list if v not in fetched_list]
         self.assertFalse(missing_vols,
-                         "Failed to find volume %s in fetched list" %
+                         "Failed to find share %s in fetched list" %
                          ', '.join(m_vol['display_name']
                                    for m_vol in missing_vols))
 
     @attr(type='smoke')
-    def test_volume_list_with_details(self):
-        # Get a list of Volumes with details
-        # Fetch all Volumes
-        resp, fetched_list = self.client.list_volumes_with_detail()
+    def test_share_list_with_details(self):
+        # Get a list of shares with details
+        # Fetch all shares
+        resp, fetched_list = self.client.list_shares_with_detail()
         self.assertEqual(200, resp.status)
-        # Verify that all the volumes are returned
-        missing_vols = [v for v in self.volume_list if v not in fetched_list]
+        # Verify that all the shares are returned
+        missing_vols = [v for v in self.share_list if v not in fetched_list]
         self.assertFalse(missing_vols,
-                         "Failed to find volume %s in fetched list" %
+                         "Failed to find share %s in fetched list" %
                          ', '.join(m_vol['display_name']
                                    for m_vol in missing_vols))
 
 
-class VolumeListTestXML(VolumesListTest):
+class ShareListTestXML(SharesListTest):
     _interface = 'xml'

@@ -43,25 +43,24 @@ class BaseShareTest(tempest.test.BaseTestCase):
                                  interface=cls._interface)
         else:
             os = clients.Manager(interface=cls._interface)
-
         cls.os = os
-        cls.volumes_client = os.volumes_client
-        cls.snapshots_client = os.snapshots_client
+        cls.shares_client = os.shares_client
+        cls.snapshots_client = os.shares_snapshots_client
         cls.servers_client = os.servers_client
         cls.image_ref = cls.config.compute.image_ref
         cls.flavor_ref = cls.config.compute.flavor_ref
-        cls.build_interval = cls.config.volume.build_interval
-        cls.build_timeout = cls.config.volume.build_timeout
+        cls.build_interval = cls.config.share.build_interval
+        cls.build_timeout = cls.config.share.build_timeout
         cls.snapshots = []
-        cls.volumes = []
+        cls.shares = []
 
         skip_msg = ("%s skipped as Cinder endpoint is not available" %
                     cls.__name__)
         try:
-            cls.volumes_client.keystone_auth(cls.os.username,
+            cls.shares_client.keystone_auth(cls.os.username,
                                              cls.os.password,
                                              cls.os.auth_url,
-                                             cls.volumes_client.service,
+                                             cls.shares_client.service,
                                              cls.os.tenant_name)
         except exceptions.EndpointNotFound:
             cls.clear_isolated_creds()
@@ -79,7 +78,7 @@ class BaseShareTest(tempest.test.BaseTestCase):
     def _get_isolated_creds(cls):
         """
         Creates a new set of user/tenant/password credentials for a
-        **regular** user of the Volume API so that a test case can
+        **regular** user of the share API so that a test case can
         operate in an isolated tenant container.
         """
         admin_client = cls._get_identity_admin_client()
@@ -119,13 +118,13 @@ class BaseShareTest(tempest.test.BaseTestCase):
     @classmethod
     def tearDownClass(cls):
         cls.clear_snapshots()
-        cls.clear_volumes()
+        cls.clear_shares()
         cls.clear_isolated_creds()
 
     @classmethod
-    def create_snapshot(cls, volume_id=1, **kwargs):
+    def create_snapshot(cls, share_id=1, **kwargs):
         """Wrapper utility that returns a test snapshot."""
-        resp, snapshot = cls.snapshots_client.create_snapshot(volume_id,
+        resp, snapshot = cls.snapshots_client.create_snapshot(share_id,
                                                               **kwargs)
         assert 200 == resp.status
         cls.snapshots_client.wait_for_snapshot_status(snapshot['id'],
@@ -137,25 +136,25 @@ class BaseShareTest(tempest.test.BaseTestCase):
     # only in a single location in the source, and could be more general.
 
     @classmethod
-    def create_volume(cls, size=1, **kwargs):
-        """Wrapper utility that returns a test volume."""
-        resp, volume = cls.volumes_client.create_volume(size, **kwargs)
+    def create_share(cls, size=1, **kwargs):
+        """Wrapper utility that returns a test share."""
+        resp, share = cls.shares_client.create_share(size, **kwargs)
         assert 200 == resp.status
-        cls.volumes_client.wait_for_volume_status(volume['id'], 'available')
-        cls.volumes.append(volume)
-        return volume
+        cls.shares_client.wait_for_share_status(share['id'], 'available')
+        cls.shares.append(share)
+        return share
 
     @classmethod
-    def clear_volumes(cls):
-        for volume in cls.volumes:
+    def clear_shares(cls):
+        for share in cls.shares:
             try:
-                cls.volume_client.delete_volume(volume['id'])
+                cls.share_client.delete_share(share['id'])
             except Exception:
                 pass
 
-        for volume in cls.volumes:
+        for share in cls.shares:
             try:
-                cls.servers_client.wait_for_resource_deletion(volume['id'])
+                cls.servers_client.wait_for_resource_deletion(share['id'])
             except Exception:
                 pass
 
@@ -189,18 +188,18 @@ class BaseShareTest(tempest.test.BaseTestCase):
             time.sleep(self.build_interval)
 
 
-class BaseVolumeAdminTest(BaseVolumeTest):
-    """Base test case class for all Volume Admin API tests."""
+class BaseShareAdminTest(BaseShareTest):
+    """Base test case class for all share Admin API tests."""
     @classmethod
     def setUpClass(cls):
-        super(BaseVolumeAdminTest, cls).setUpClass()
+        super(BaseShareAdminTest, cls).setUpClass()
         cls.adm_user = cls.config.identity.admin_username
         cls.adm_pass = cls.config.identity.admin_password
         cls.adm_tenant = cls.config.identity.admin_tenant_name
         if not all((cls.adm_user, cls.adm_pass, cls.adm_tenant)):
-            msg = ("Missing Volume Admin API credentials "
+            msg = ("Missing share Admin API credentials "
                    "in configuration.")
             raise cls.skipException(msg)
 
         cls.os_adm = clients.AdminManager(interface=cls._interface)
-        cls.client = cls.os_adm.volume_types_client
+        cls.client = cls.os_adm.share_types_client

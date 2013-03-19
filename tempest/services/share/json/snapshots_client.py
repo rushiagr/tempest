@@ -24,15 +24,15 @@ LOG = logging.getLogger(__name__)
 
 
 class SnapshotsClientJSON(RestClient):
-    """Client class to send CRUD Volume API requests."""
+    """Client class to send CRUD share API requests."""
 
     def __init__(self, config, username, password, auth_url, tenant_name=None):
         super(SnapshotsClientJSON, self).__init__(config, username, password,
                                                   auth_url, tenant_name)
 
-        self.service = self.config.volume.catalog_type
-        self.build_interval = self.config.volume.build_interval
-        self.build_timeout = self.config.volume.build_timeout
+        self.service = self.config.share.catalog_type
+        self.build_interval = self.config.share.build_interval
+        self.build_timeout = self.config.share.build_timeout
 
     def list_snapshots(self, params=None):
         """List all the snapshot."""
@@ -61,15 +61,15 @@ class SnapshotsClientJSON(RestClient):
         body = json.loads(body)
         return resp, body['snapshot']
 
-    def create_snapshot(self, volume_id, **kwargs):
+    def create_snapshot(self, share_id, **kwargs):
         """
         Creates a new snapshot.
-        volume_id(Required): id of the volume.
-        force: Create a snapshot even if the volume attached (Default=False)
+        share_id(Required): id of the share.
+        force: Create a snapshot even if the share attached (Default=False)
         display_name: Optional snapshot Name.
         display_description: User friendly snapshot description.
         """
-        post_body = {'volume_id': volume_id}
+        post_body = {'share_id': share_id}
         post_body.update(kwargs)
         post_body = json.dumps({'snapshot': post_body})
         resp, body = self.post('snapshots', post_body, self.headers)

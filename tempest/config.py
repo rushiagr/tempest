@@ -315,6 +315,30 @@ def register_volume_opts(conf):
         conf.register_opt(opt, group='volume')
 
 
+share_group = cfg.OptGroup(name='share',
+                            title='File Storage Options')
+
+ShareGroup = [
+    cfg.IntOpt('build_interval',
+               default=10,
+               help='Time in seconds between volume availability checks.'),
+    cfg.IntOpt('build_timeout',
+               default=300,
+               help='Timeout in seconds to wait for a share to become'
+                    'available.'),
+    cfg.StrOpt('catalog_type',
+               default='Share',
+               help="Catalog type of the Share Service"),
+]
+
+
+def register_share_opts(conf):
+    conf.register_group(share_group)
+    for opt in ShareGroup:
+        conf.register_opt(opt, group='share')
+
+
+
 object_storage_group = cfg.OptGroup(name='object-storage',
                                     title='Object Storage Service Options')
 
@@ -451,6 +475,7 @@ class TempestConfig:
         register_image_opts(cfg.CONF)
         register_network_opts(cfg.CONF)
         register_volume_opts(cfg.CONF)
+        register_share_opts(cfg.CONF)
         register_object_storage_opts(cfg.CONF)
         register_boto_opts(cfg.CONF)
         register_compute_admin_opts(cfg.CONF)
@@ -461,6 +486,7 @@ class TempestConfig:
         self.images = cfg.CONF.image
         self.network = cfg.CONF.network
         self.volume = cfg.CONF.volume
+        self.share = cfg.CONF.share
         self.object_storage = cfg.CONF['object-storage']
         self.boto = cfg.CONF.boto
         self.compute_admin = cfg.CONF['compute-admin']

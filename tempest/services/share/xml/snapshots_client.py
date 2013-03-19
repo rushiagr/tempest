@@ -29,15 +29,15 @@ LOG = logging.getLogger(__name__)
 
 
 class SnapshotsClientXML(RestClientXML):
-    """Client class to send CRUD Volume API requests."""
+    """Client class to send CRUD Share API requests."""
 
     def __init__(self, config, username, password, auth_url, tenant_name=None):
         super(SnapshotsClientXML, self).__init__(config, username, password,
                                                  auth_url, tenant_name)
 
-        self.service = self.config.volume.catalog_type
-        self.build_interval = self.config.volume.build_interval
-        self.build_timeout = self.config.volume.build_timeout
+        self.service = self.config.share.catalog_type
+        self.build_interval = self.config.share.build_interval
+        self.build_timeout = self.config.share.build_timeout
 
     def list_snapshots(self, params=None):
         """List all snapshot."""
@@ -69,15 +69,15 @@ class SnapshotsClientXML(RestClientXML):
         body = etree.fromstring(body)
         return resp, xml_to_json(body)
 
-    def create_snapshot(self, volume_id, **kwargs):
+    def create_snapshot(self, share_id, **kwargs):
         """Creates a new snapshot.
-        volume_id(Required): id of the volume.
-        force: Create a snapshot even if the volume attached (Default=False)
+        share_id(Required): id of the share.
+        force: Create a snapshot even if the share attached (Default=False)
         display_name: Optional snapshot Name.
         display_description: User friendly snapshot description.
         """
-        #NOTE(afazekas): it should use the volume namaspace
-        snapshot = Element("snapshot", xmlns=XMLNS_11, volume_id=volume_id)
+        #NOTE(afazekas): it should use the share namaspace
+        snapshot = Element("snapshot", xmlns=XMLNS_11, share_id=share_id)
         for key, value in kwargs.items():
             snapshot.add_attr(key, value)
         resp, body = self.post('snapshots', str(Document(snapshot)),

@@ -29,19 +29,19 @@ from tempest.services.compute.xml.common import xml_to_json
 from tempest.services.compute.xml.common import XMLNS_11
 
 
-class VolumesClientXML(RestClientXML):
+class SharesClientXML(RestClientXML):
     """
-    Client class to send CRUD Volume API requests to a Cinder endpoint
+    Client class to send CRUD share API requests to a Cinder endpoint
     """
 
     def __init__(self, config, username, password, auth_url, tenant_name=None):
-        super(VolumesClientXML, self).__init__(config, username, password,
+        super(SharesClientXML, self).__init__(config, username, password,
                                                auth_url, tenant_name)
-        self.service = self.config.volume.catalog_type
+        self.service = self.config.share.catalog_type
         self.build_interval = self.config.compute.build_interval
         self.build_timeout = self.config.compute.build_timeout
 
-    def _parse_volume(self, body):
+    def _parse_share(self, body):
         vol = dict((attr, body.get(attr)) for attr in body.keys())
 
         for child in body.getchildren():
@@ -56,57 +56,57 @@ class VolumesClientXML(RestClientXML):
                 vol[tag] = xml_to_json(child)
         return vol
 
-    def list_volumes(self, params=None):
-        """List all the volumes created."""
-        url = 'volumes'
+    def list_shares(self, params=None):
+        """List all the shares created."""
+        url = 'shares'
 
         if params:
             url += '?%s' % urllib.urlencode(params)
 
         resp, body = self.get(url, self.headers)
         body = etree.fromstring(body)
-        volumes = []
+        shares = []
         if body is not None:
-            volumes += [self._parse_volume(vol) for vol in list(body)]
-        return resp, volumes
+            shares += [self._parse_share(vol) for vol in list(body)]
+        return resp, shares
 
-    def list_volumes_with_detail(self, params=None):
-        """List all the details of volumes."""
-        url = 'volumes/detail'
+    def list_shares_with_detail(self, params=None):
+        """List all the details of shares."""
+        url = 'shares/detail'
 
         if params:
             url += '?%s' % urllib.urlencode(params)
 
         resp, body = self.get(url, self.headers)
         body = etree.fromstring(body)
-        volumes = []
+        shares = []
         if body is not None:
-            volumes += [self._parse_volume(vol) for vol in list(body)]
-        return resp, volumes
+            shares += [self._parse_share(vol) for vol in list(body)]
+        return resp, shares
 
-    def get_volume(self, volume_id):
-        """Returns the details of a single volume."""
-        url = "volumes/%s" % str(volume_id)
+    def get_share(self, share_id):
+        """Returns the details of a single share."""
+        url = "shares/%s" % str(share_id)
         resp, body = self.get(url, self.headers)
         body = etree.fromstring(body)
-        return resp, self._parse_volume(body)
+        return resp, self._parse_share(body)
 
-    def create_volume(self, size, **kwargs):
-        """Creates a new Volume.
+    def create_share(self, size, **kwargs):
+        """Creates a new share.
 
-        :param size: Size of volume in GB. (Required)
-        :param display_name: Optional Volume Name.
+        :param size: Size of share in GB. (Required)
+        :param display_name: Optional share Name.
         :param metadata: An optional dictionary of values for metadata.
-        :param volume_type: Optional Name of volume_type for the volume
-        :param snapshot_id: When specified the volume is created from
+        :param share_type: Optional Name of share_type for the share
+        :param snapshot_id: When specified the share is created from
                             this snapshot
         """
-        #NOTE(afazekas): it should use a volume namespace
-        volume = Element("volume", xmlns=XMLNS_11, size=size)
+        #NOTE(afazekas): it should use a share namespace
+        share = Element("share", xmlns=XMLNS_11, size=size)
 
         if 'metadata' in kwargs:
             _metadata = Element('metadata')
-            volume.append(_metadata)
+            share.append(_metadata)
             for key, value in kwargs['metadata'].items():
                 meta = Element('meta')
                 meta.add_attr('key', key)
@@ -118,40 +118,40 @@ class VolumesClientXML(RestClientXML):
             attr_to_add = kwargs
 
         for key, value in attr_to_add.items():
-            volume.add_attr(key, value)
+            share.add_attr(key, value)
 
-        resp, body = self.post('volumes', str(Document(volume)),
+        resp, body = self.post('shares', str(Document(share)),
                                self.headers)
         body = xml_to_json(etree.fromstring(body))
         return resp, body
 
-    def delete_volume(self, volume_id):
-        """Deletes the Specified Volume."""
-        return self.delete("volumes/%s" % str(volume_id))
+    def delete_share(self, share_id):
+        """Deletes the Specified share."""
+        return self.delete("shares/%s" % str(share_id))
 
-    def wait_for_volume_status(self, volume_id, status):
-        """Waits for a Volume to reach a given status."""
-        resp, body = self.get_volume(volume_id)
-        volume_status = body['status']
+    def wait_for_share_status(self, share_id, status):
+        """Waits for a share to reach a given status."""
+        resp, body = self.get_share(share_id)
+        share_status = body['status']
         start = int(time.time())
 
-        while volume_status != status:
+        while share_status != status:
             time.sleep(self.build_interval)
-            resp, body = self.get_volume(volume_id)
-            volume_status = body['status']
-            if volume_status == 'error':
-                raise exceptions.VolumeBuildErrorException(volume_id=volume_id)
+            resp, body = self.get_share(share_id)
+            share_status = body['status']
+            if share_status == 'error':
+                raise exceptions.shareBuildErrorException(share_id=share_id)
 
             if int(time.time()) - start >= self.build_timeout:
-                message = 'Volume %s failed to reach %s status within '\
-                          'the required time (%s s).' % (volume_id,
+                message = 'share %s failed to reach %s status within '\
+                          'the required time (%s s).' % (share_id,
                                                          status,
                                                          self.build_timeout)
                 raise exceptions.TimeoutException(message)
 
     def is_resource_deleted(self, id):
         try:
-            self.get_volume(id)
+            self.get_share(id)
         except exceptions.NotFound:
             return True
         return False
