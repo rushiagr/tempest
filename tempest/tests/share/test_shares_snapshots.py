@@ -18,6 +18,7 @@ from tempest.tests.share import base
 class SharesSnapshotTest(base.BaseShareTest):
     _interface = "json"
 
+    #TODO(rushiagr): make this test work. Needs change in original code.
     def test_share_from_snapshot(self):
         share_origin = self.create_share(size=1, proto='nfs')
         snapshot = self.create_snapshot(share_origin['id'])

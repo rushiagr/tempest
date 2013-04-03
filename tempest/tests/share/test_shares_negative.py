@@ -83,8 +83,15 @@ class SharesNegativeTest(base.BaseShareTest):
 
     def test_get_invalid_share_id(self):
         # Should not be able to get share with invalid id
-        self.assertRaises(exceptions.NotFound, self.client.get_share,
+        self.assertRaises(exceptions.BadRequest, self.client.get_share,
                           '#$%%&^&^')
+        self.client.get_share('zoomm')
+
+#TODO(rushiagr): make this commented test work. Needs work with the actual code
+#    def test_create_share_with_invalid_protocol(self):
+#        v_name = rand_name('Share-')
+#       self.assertRaises(exceptions.BadRequest, self.client.create_share,
+#                         size='1', proto='bad', display_name=v_name)
 
     def test_get_share_without_passing_share_id(self):
         # Should not be able to get share when empty ID is passed
