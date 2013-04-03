@@ -127,7 +127,7 @@ class BaseShareTest(tempest.test.BaseTestCase):
         """Wrapper utility that returns a test snapshot."""
         resp, snapshot = cls.snapshots_client.create_snapshot(share_id,
                                                               **kwargs)
-        assert 200 == resp.status
+        assert 202 == resp.status
         cls.snapshots_client.wait_for_snapshot_status(snapshot['id'],
                                                       'available')
         cls.snapshots.append(snapshot)

@@ -42,7 +42,7 @@ class SnapshotsClientJSON(RestClient):
 
         resp, body = self.get(url)
         body = json.loads(body)
-        return resp, body['snapshots']
+        return resp, body['share-snapshots']
 
     def list_snapshot_with_detail(self, params=None):
         """List the details of all snapshots."""
@@ -52,14 +52,14 @@ class SnapshotsClientJSON(RestClient):
 
         resp, body = self.get(url)
         body = json.loads(body)
-        return resp, body['snapshots']
+        return resp, body['share-snapshots']
 
     def get_snapshot(self, snapshot_id):
         """Returns the details of a single snapshot."""
         url = "share-snapshots/%s" % str(snapshot_id)
         resp, body = self.get(url)
         body = json.loads(body)
-        return resp, body['snapshot']
+        return resp, body['share-snapshot']
 
     def create_snapshot(self, share_id, **kwargs):
         """
@@ -74,7 +74,7 @@ class SnapshotsClientJSON(RestClient):
         post_body = json.dumps({'share-snapshot': post_body})
         resp, body = self.post('share-snapshots', post_body, self.headers)
         body = json.loads(body)
-        return resp, body['snapshot']
+        return resp, body['share-snapshot']
 
     #NOTE(afazekas): just for the wait function
     def _get_snapshot_status(self, snapshot_id):
