@@ -20,7 +20,7 @@ from tempest.test import attr
 from tempest.tests.share import base
 
 
-class SharesListTest(base.BaseShareTest):
+class SharesListTestCIFS(base.BaseShareTest):
 
     """
     This test creates a number of 1G shares. To run successfully,
@@ -44,7 +44,7 @@ class SharesListTest(base.BaseShareTest):
             v_name = rand_name('share')
             metadata = {'Type': 'work'}
             try:
-                resp, share = cls.client.create_share(size=1,proto='nfs',
+                resp, share = cls.client.create_share(size=1,proto='cifs',
                                                         display_name=v_name,
                                                         metadata=metadata)
                 cls.client.wait_for_share_status(share['id'], 'available')
@@ -76,6 +76,7 @@ class SharesListTest(base.BaseShareTest):
             cls.client.wait_for_resource_deletion(volid)
         super(SharesListTest, cls).tearDownClass()
 
+    #TODO(rushiagr): write test_share_list (without details)
     @attr(type='smoke')
     def test_share_list_with_details(self):
         # Get a list of shares with details

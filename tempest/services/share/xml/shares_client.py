@@ -88,20 +88,9 @@ class SharesClientXML(RestClientXML):
                             this snapshot
         """
         #NOTE(afazekas): it should use a share namespace
-        share = Element("share", xmlns=XMLNS_11, size=size, proto=proto, share_type=proto, display_name=(kwargs.get('display_name', 'share1')))
+        share = Element("share", xmlns=XMLNS_11, size=size, share_type=proto)
 
-        if 'metadata' in kwargs:
-            _metadata = Element('metadata')
-            share.append(_metadata)
-            for key, value in kwargs['metadata'].items():
-                meta = Element('meta')
-                meta.add_attr('key', key)
-                meta.append(Text(value))
-                _metadata.append(meta)
-            attr_to_add = kwargs.copy()
-            del attr_to_add['metadata']
-        else:
-            attr_to_add = kwargs
+        attr_to_add = kwargs
 
         for key, value in attr_to_add.items():
             share.add_attr(key, value)
