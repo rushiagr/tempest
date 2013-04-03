@@ -32,7 +32,7 @@ class SharesNegativeTest(base.BaseShareTest):
         # Should not be able to get a nonexistant share
         #Creating a nonexistant share id
         share_id_list = []
-        resp, shares = self.client.list_shares()
+        resp, shares = self.client.list_shares_with_detail()
         for i in range(len(shares)):
             share_id_list.append(shares[i]['id'])
         while True:
@@ -47,7 +47,7 @@ class SharesNegativeTest(base.BaseShareTest):
         # Should not be able to delete a nonexistant Share
         # Creating nonexistant share id
         share_id_list = []
-        resp, shares = self.client.list_shares()
+        resp, shares = self.client.list_shares_with_detail()
         for i in range(len(shares)):
             share_id_list.append(shares[i]['id'])
         while True:
@@ -64,7 +64,7 @@ class SharesNegativeTest(base.BaseShareTest):
         v_name = rand_name('Share-')
         metadata = {'Type': 'work'}
         self.assertRaises(exceptions.BadRequest, self.client.create_share,
-                          size='#$%', display_name=v_name, metadata=metadata)
+                          size='#$%', proto='nfs', display_name=v_name)
 
     def test_create_share_with_out_passing_size(self):
         # Should not be able to create share without passing size
@@ -72,14 +72,14 @@ class SharesNegativeTest(base.BaseShareTest):
         v_name = rand_name('Share-')
         metadata = {'Type': 'work'}
         self.assertRaises(exceptions.BadRequest, self.client.create_share,
-                          size='', display_name=v_name, metadata=metadata)
+                          size='', proto='nfs', display_name=v_name)
 
     def test_create_share_with_size_zero(self):
         # Should not be able to create share with size zero
         v_name = rand_name('Share-')
         metadata = {'Type': 'work'}
         self.assertRaises(exceptions.BadRequest, self.client.create_share,
-                          size='0', display_name=v_name, metadata=metadata)
+                          size='0', proto='nfs', display_name=v_name)
 
     def test_get_invalid_share_id(self):
         # Should not be able to get share with invalid id

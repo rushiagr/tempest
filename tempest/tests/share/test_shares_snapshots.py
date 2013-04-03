@@ -19,9 +19,9 @@ class SharesSnapshotTest(base.BaseShareTest):
     _interface = "json"
 
     def test_share_from_snapshot(self):
-        share_origin = self.create_share(size=1)
+        share_origin = self.create_share(size=1, proto='nfs')
         snapshot = self.create_snapshot(share_origin['id'])
-        share_snap = self.create_share(size=1,
+        share_snap = self.create_share(size=1,proto='nfs',
                                          snapshot_id=
                                          snapshot['id'])
         self.snapshots_client.delete_snapshot(snapshot['id'])

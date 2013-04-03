@@ -30,13 +30,13 @@ class SnapshotsClientJSON(RestClient):
         super(SnapshotsClientJSON, self).__init__(config, username, password,
                                                   auth_url, tenant_name)
 
-        self.service = self.config.share.catalog_type
+        self.service = 'volume'#self.config.share.catalog_type
         self.build_interval = self.config.share.build_interval
         self.build_timeout = self.config.share.build_timeout
 
     def list_snapshots(self, params=None):
         """List all the snapshot."""
-        url = 'snapshots'
+        url = 'share-snapshots'
         if params:
                 url += '?%s' % urllib.urlencode(params)
 
@@ -46,7 +46,7 @@ class SnapshotsClientJSON(RestClient):
 
     def list_snapshot_with_detail(self, params=None):
         """List the details of all snapshots."""
-        url = 'snapshots/detail'
+        url = 'share-snapshots/detail'
         if params:
                 url += '?%s' % urllib.urlencode(params)
 
@@ -56,7 +56,7 @@ class SnapshotsClientJSON(RestClient):
 
     def get_snapshot(self, snapshot_id):
         """Returns the details of a single snapshot."""
-        url = "snapshots/%s" % str(snapshot_id)
+        url = "share-snapshots/%s" % str(snapshot_id)
         resp, body = self.get(url)
         body = json.loads(body)
         return resp, body['snapshot']
@@ -71,8 +71,8 @@ class SnapshotsClientJSON(RestClient):
         """
         post_body = {'share_id': share_id}
         post_body.update(kwargs)
-        post_body = json.dumps({'snapshot': post_body})
-        resp, body = self.post('snapshots', post_body, self.headers)
+        post_body = json.dumps({'share-snapshot': post_body})
+        resp, body = self.post('share-snapshots', post_body, self.headers)
         body = json.loads(body)
         return resp, body['snapshot']
 
@@ -115,7 +115,7 @@ class SnapshotsClientJSON(RestClient):
 
     def delete_snapshot(self, snapshot_id):
         """Delete Snapshot."""
-        return self.delete("snapshots/%s" % str(snapshot_id))
+        return self.delete("share-snapshots/%s" % str(snapshot_id))
 
     def is_resource_deleted(self, id):
         try:

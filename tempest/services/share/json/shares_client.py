@@ -67,7 +67,7 @@ class SharesClientJSON(RestClient):
         post_body = {'size': size}
         post_body['proto'] = proto
         post_body['share_type'] = proto
-        post_body['display_name'] = kwargs['display_name'] or 'share1'
+        post_body['display_name'] = kwargs.get('display_name', 'share1')#kwargs['display_name'] or 'share1'
         post_body.update(kwargs)
         post_body = json.dumps({'share': post_body})
         resp, body = self.post('shares', post_body, self.headers)
