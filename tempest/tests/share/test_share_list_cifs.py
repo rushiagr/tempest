@@ -34,7 +34,7 @@ class SharesListTestCIFS(base.BaseShareTest):
 
     @classmethod
     def setUpClass(cls):
-        super(SharesListTest, cls).setUpClass()
+        super(SharesListTestCIFS, cls).setUpClass()
         cls.client = cls.shares_client
 
         # Create 3 test shares
@@ -74,7 +74,7 @@ class SharesListTestCIFS(base.BaseShareTest):
         for volid in cls.share_id_list:
             resp, _ = cls.client.delete_share(volid)
             cls.client.wait_for_resource_deletion(volid)
-        super(SharesListTest, cls).tearDownClass()
+        super(SharesListTestCIFS, cls).tearDownClass()
 
     #TODO(rushiagr): write test_share_list (without details)
     @attr(type='smoke')
@@ -91,5 +91,5 @@ class SharesListTestCIFS(base.BaseShareTest):
                                    for m_vol in missing_vols))
 
 
-class ShareListTestXML(SharesListTest):
+class ShareListTestCIFSXML(SharesListTestCIFS):
     _interface = 'xml'
