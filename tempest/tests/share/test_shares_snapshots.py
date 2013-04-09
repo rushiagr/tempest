@@ -22,9 +22,9 @@ class SharesSnapshotTest(base.BaseShareTest):
     def test_share_from_snapshot(self):
         share_origin = self.create_share(size=1, proto='nfs')
         snapshot = self.create_snapshot(share_origin['id'])
-        share_snap = self.create_share(size=1,proto='nfs',
-                                         snapshot_id=
-                                         snapshot['id'])
+        share_snap = self.create_share(size=1, proto='nfs',
+                                       snapshot_id=
+                                       snapshot['id'])
         self.snapshots_client.delete_snapshot(snapshot['id'])
         self.shares_client.delete_share(share_snap['id'])
         self.snapshots_client.wait_for_resource_deletion(snapshot['id'])

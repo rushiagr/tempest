@@ -44,7 +44,8 @@ from tempest.services.volume.json import snapshots_client
 from tempest.services.volume.json import volumes_client
 
 from tempest.services.share.json import shares_client
-from tempest.services.share.json import snapshots_client as shares_snapshots_client
+from tempest.services.share.json import \
+    snapshots_client as shares_snapshots_client
 
 NetworkClient = network_client.NetworkClient
 ImagesClient = images_client.ImagesClientJSON
@@ -264,7 +265,7 @@ class ComputeFuzzClientManager(FuzzClientManager):
         self.snapshots_client = SnapshotsClient(*client_args)
         self.quotas_client = QuotasClient(*client_args)
         self.network_client = NetworkClient(*client_args)
-        
+
         self.shares_client = SharesClient(*client_args)
         self.shares_snapshots_client = SharesSnapshotsClient(*client_args)
 

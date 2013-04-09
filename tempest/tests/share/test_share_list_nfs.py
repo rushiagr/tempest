@@ -44,9 +44,9 @@ class SharesListTestNFS(base.BaseShareTest):
             v_name = rand_name('share')
             metadata = {'Type': 'work'}
             try:
-                resp, share = cls.client.create_share(size=1,proto='nfs',
-                                                        display_name=v_name,
-                                                        metadata=metadata)
+                resp, share = cls.client.create_share(size=1, proto='nfs',
+                                                      display_name=v_name,
+                                                      metadata=metadata)
                 cls.client.wait_for_share_status(share['id'], 'available')
                 resp, share = cls.client.get_share(share['id'])
                 cls.share_list.append(share)

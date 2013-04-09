@@ -54,15 +54,15 @@ class BaseShareTest(tempest.test.BaseTestCase):
         cls.snapshots = []
         cls.shares = []
 
-        skip_msg = (("%s skipped as Cinder endpoint is not available"+'|'+"volume" '''cls.shares_client.service''') %
+        skip_msg = (("%s skipped as Cinder endpoint is not available") %
                     cls.__name__)
+
         try:
-            
             cls.shares_client.keystone_auth(cls.os.username,
-                                             cls.os.password,
-                                             cls.os.auth_url,
-                                             'volume',#cls.shares_client.service,
-                                             cls.os.tenant_name)
+                                            cls.os.password,
+                                            cls.os.auth_url,
+                                            'volume',
+                                            cls.os.tenant_name)
         except exceptions.EndpointNotFound:
             cls.clear_isolated_creds()
             raise cls.skipException(skip_msg)

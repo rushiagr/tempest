@@ -316,7 +316,7 @@ def register_volume_opts(conf):
 
 
 share_group = cfg.OptGroup(name='share',
-                            title='File Storage Options')
+                           title='File Storage Options')
 
 ShareGroup = [
     cfg.IntOpt('build_interval',
@@ -336,7 +336,6 @@ def register_share_opts(conf):
     conf.register_group(share_group)
     for opt in ShareGroup:
         conf.register_opt(opt, group='share')
-
 
 
 object_storage_group = cfg.OptGroup(name='object-storage',

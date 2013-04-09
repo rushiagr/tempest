@@ -36,7 +36,7 @@ class SharesClientXML(RestClientXML):
 
     def __init__(self, config, username, password, auth_url, tenant_name=None):
         super(SharesClientXML, self).__init__(config, username, password,
-                                               auth_url, tenant_name)
+                                              auth_url, tenant_name)
         self.service = 'volume'
         self.build_interval = self.config.compute.build_interval
         self.build_timeout = self.config.compute.build_timeout

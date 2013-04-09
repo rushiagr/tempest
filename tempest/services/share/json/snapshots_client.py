@@ -30,7 +30,7 @@ class SnapshotsClientJSON(RestClient):
         super(SnapshotsClientJSON, self).__init__(config, username, password,
                                                   auth_url, tenant_name)
 
-        self.service = 'volume'#self.config.share.catalog_type
+        self.service = 'volume'
         self.build_interval = self.config.share.build_interval
         self.build_timeout = self.config.share.build_timeout
 

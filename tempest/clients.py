@@ -72,9 +72,11 @@ from tempest.services.volume.xml.snapshots_client import SnapshotsClientXML
 from tempest.services.volume.xml.volumes_client import VolumesClientXML
 
 from tempest.services.share.json.shares_client import SharesClientJSON
-from tempest.services.share.json.snapshots_client import SnapshotsClientJSON as SharesSnapshotsClientJSON
+from tempest.services.share.json.snapshots_client import \
+    SnapshotsClientJSON as SharesSnapshotsClientJSON
 from tempest.services.share.xml.shares_client import SharesClientXML
-from tempest.services.share.xml.snapshots_client import SnapshotsClientXML as SharesSnapshotsClientXML
+from tempest.services.share.xml.snapshots_client import \
+    SnapshotsClientXML as SharesSnapshotsClientXML
 
 from tempest.services.compute.json.interfaces_client import \
     InterfacesClientJSON
@@ -231,7 +233,8 @@ class Manager(object):
             self.volume_types_client = \
                 VOLUME_TYPES_CLIENTS[interface](*client_args)
             self.shares_client = SHARES_CLIENTS[interface](*client_args)
-            self.shares_snapshots_client = SHARES_SNAPSHOTS_CLIENTS[interface](*client_args)
+            self.shares_snapshots_client = \
+                SHARES_SNAPSHOTS_CLIENTS[interface](*client_args)
             self.identity_client = IDENTITY_CLIENT[interface](*client_args)
             self.token_client = TOKEN_CLIENT[interface](self.config)
             self.security_groups_client = \

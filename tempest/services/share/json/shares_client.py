@@ -30,9 +30,9 @@ class SharesClientJSON(RestClient):
 
     def __init__(self, config, username, password, auth_url, tenant_name=None):
         super(SharesClientJSON, self).__init__(config, username, password,
-                                                auth_url, tenant_name)
+                                               auth_url, tenant_name)
 
-        self.service = 'volume'#self.config.volume.catalog_type
+        self.service = 'volume'
         self.build_interval = self.config.volume.build_interval
         self.build_timeout = self.config.volume.build_timeout
 
@@ -78,7 +78,6 @@ class SharesClientJSON(RestClient):
     def delete_share(self, share_id):
         """Deletes the Specified Share."""
         return self.delete("shares/%s" % str(share_id))
-
 
     def wait_for_share_status(self, share_id, status):
         """Waits for a Share to reach a given status."""
